@@ -1,0 +1,25 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.31112.23
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BellyFish", "PepekFish\BellyFish.csproj", "{5562DA03-0578-4868-8CDE-481F9542A213}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{5562DA03-0578-4868-8CDE-481F9542A213}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5562DA03-0578-4868-8CDE-481F9542A213}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5562DA03-0578-4868-8CDE-481F9542A213}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5562DA03-0578-4868-8CDE-481F9542A213}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {5A4AE18B-59E5-4048-9199-E7F4E14C3FF9}
+	EndGlobalSection
+EndGlobal
