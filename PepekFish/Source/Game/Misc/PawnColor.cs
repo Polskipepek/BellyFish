@@ -1,4 +1,4 @@
-﻿namespace PepekFish.Source.Game.Misc {
+﻿namespace BellyFish.Source.Game.Misc {
     enum PawnColor {
         White,
         Black,

@@ -1,6 +1,6 @@
 ﻿using BellyFish.Source.Misc.Attributes;
 
-namespace PepekFish.Source.Game.Misc {
+namespace BellyFish.Source.Game.Misc {
     enum PawnType {
         [PawnTypeValue(1)]
         Pawn,

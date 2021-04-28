@@ -1,10 +1,16 @@
-﻿using PepekFish.Source.Misc;
+﻿using BellyFish.Source.Game.Pawns;
+using BellyFish.Source.Misc;
 
 namespace BellyFish.Source.Game.Gameplay {
-    class Move {
-        public bool IsTake => TakePawnPos.HasValue;
-        public Int2D PawnOriginPos { get; set; }
-        public Int2D NewPawnPos { get; set; }
-        public Int2D? TakePawnPos { get; set; }
+    struct Move {
+        public int MoveNumber { get; init; }
+        public bool IsTake => TakenPawn != null;
+        public bool IsPromoting { get; init; }
+        public bool IsCastling => CastlingRook.HasValue;
+        public Pawn Pawn { get; init; }
+        public Pawn TakenPawn { get; init; }
+        public Position PawnOriginPos { get; init; }
+        public Position NewPawnPos { get; init; }
+        public Position? CastlingRook { get; init; }
     }
 }
