@@ -20,17 +20,19 @@ namespace BellyFish {
             IMoveStrategy pawnMoveStrategy = new PawnMoveStrategy();
             IMoveStrategy bishopMoveStrategy = new BishopMoveStrategy();
             MainCheckerboard = new Checkerboard(new List<Pawn>() {
-                new Pawn(new Position(1,1), PawnColor.White, PawnType.Pawn, pawnMoveStrategy),
-                new Pawn(new Position(2,1), PawnColor.White, PawnType.Bishop, bishopMoveStrategy),
-                new Pawn(new Position(1,6), PawnColor.White, PawnType.Pawn, pawnMoveStrategy),
+                new Pawn(new Position('a',1), PawnColor.White, PawnType.Pawn, pawnMoveStrategy),
+                new Pawn(new Position('b',1), PawnColor.White, PawnType.Pawn, pawnMoveStrategy),
+                /*new Pawn(new Position('c',6), PawnColor.White, PawnType.Pawn, pawnMoveStrategy),*/
             });
+            var pieces = MainCheckerboard.GetAllPawns();
+            PiecesOnBoard.Text = $"Pionów: {pieces.Count()}{Environment.NewLine}";
 
-            PiecesOnBoard.Text = $"Pionów: {MainCheckerboard.GetAllPawns().Count()}{Environment.NewLine}";
-
-            foreach (var pawn in MainCheckerboard.GetAllPawns()) {
-                PiecesOnBoard.Text += $"{pawn.PawnColor} {pawn.PawnType}, Position: {pawn.Position.Letters}{pawn.Position.Digits},{Environment.NewLine}";
-                foreach (var move in pawn.GetAvailableMoves(MainCheckerboard)) {
-                    PiecesOnBoard.Text += $"{move.PawnOriginPos.Letters}{move.PawnOriginPos.Digits}-{move.NewPawnPos.Letters}{move.NewPawnPos.Digits}, ";
+            foreach (var pawn in pieces) {
+                PiecesOnBoard.Text += $"{pawn.PawnColor} {pawn.PawnType}, {pawn.Position.Letter}{pawn.Position.Digit},{Environment.NewLine}";
+                var moves = pawn.GetAvailableMoves(MainCheckerboard);
+                PiecesOnBoard.Text += "Moves: ";
+                foreach (var move in moves) {
+                    PiecesOnBoard.Text += $"{move.PawnOriginPos.Letter}{move.PawnOriginPos.Digit}-{move.NewPawnPos.Letter}{move.NewPawnPos.Digit}, ";
 
                 }
                 PiecesOnBoard.Text += Environment.NewLine;

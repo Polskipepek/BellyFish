@@ -1,17 +1,17 @@
 ﻿namespace BellyFish.Source.Misc {
     struct Position {
-        public Position(int letters, int digits) {
-            Letters = letters;
-            Digits = digits;
+        public Position(char letter, int digit) {
+            Letter = letter;
+            Digit = digit;
         }
 
-        public int Letters { get; }
-        public int Digits { get; }
+        public char Letter { get; }
+        public int Digit { get; }
 
-        public static Position operator +(Position a, Position b) => new Position(a.Digits + b.Digits, a.Letters + b.Letters);
-        public static Position operator -(Position a, Position b) => new Position(a.Digits - b.Digits, a.Letters - b.Letters);
-        public static bool operator ==(Position a, Position b) => a.Digits == b.Digits && a.Letters == b.Letters;
-        public static bool operator !=(Position a, Position b) => a.Digits == b.Digits && a.Letters == b.Letters;
+        public static Position operator +(Position a, Position b) => new((char)(a.Letter + b.Letter), a.Digit + b.Digit);
+        public static Position operator -(Position a, Position b) => new((char)(a.Letter - b.Letter), a.Digit - b.Digit);
+        public static bool operator ==(Position a, Position b) => a.Letter == b.Letter && a.Digit == b.Digit;
+        public static bool operator !=(Position a, Position b) => a.Letter != b.Letter && a.Digit != b.Digit;
 
         public override bool Equals(object obj) {
             return base.Equals(obj);

@@ -4,8 +4,8 @@ using BellyFish.Source.Misc;
 namespace BellyFish.Source.Game.Gameplay {
     struct Move {
         public int MoveNumber { get; init; }
-        public bool IsTake => TakenPawn != null;
         public bool IsPromoting { get; init; }
+        public bool IsTake => TakenPawn != null;
         public bool IsCastling => CastlingRook.HasValue;
         public Pawn Pawn { get; init; }
         public Pawn TakenPawn { get; init; }
