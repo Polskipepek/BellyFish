@@ -31,7 +31,7 @@ namespace BellyFish {
             // PiecesOnBoard
             // 
             this.PiecesOnBoard.AutoSize = true;
-            this.PiecesOnBoard.Location = new System.Drawing.Point(421, 78);
+            this.PiecesOnBoard.Location = new System.Drawing.Point(12, 30);
             this.PiecesOnBoard.Name = "PiecesOnBoard";
             this.PiecesOnBoard.Size = new System.Drawing.Size(20, 15);
             this.PiecesOnBoard.TabIndex = 0;

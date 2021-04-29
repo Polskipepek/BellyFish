@@ -28,13 +28,22 @@ namespace BellyFish.Source.Game.Pawns {
                 PawnColor = original.PawnColor,
                 PawnType = original.PawnType,
                 Position = original.Position,
+                MoveStrategy = original.MoveStrategy,
             };
         }
 
         public void SetNewPosition(Position newPos) => Position = newPos;
 
         public IEnumerable<Move> GetAvailableMoves(Checkerboard checkerboard) {
-            return MoveStrategy.GetMoves(checkerboard, this);
+            // return MoveStrategy.GetMoves(checkerboard, this)(m=>checkerboard.MakeMove(m));
+
+            foreach (var move in MoveStrategy.GetMoves(checkerboard, this)) {
+                var copiedCheckerboard = Checkerboard.DeepCopy(checkerboard);
+                copiedCheckerboard.MakeMove(move);
+                if (!copiedCheckerboard.CheckIfCheck(PawnColor)) {
+                    yield return move;
+                }
+            }
         }
 
         public PawnTypeValueAttribute GetPawnTypeValue(Type classname) {
