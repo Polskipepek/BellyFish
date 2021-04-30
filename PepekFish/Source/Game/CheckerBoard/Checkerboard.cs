@@ -17,7 +17,7 @@ namespace BellyFish.Source.Game.CheckerBoard {
                 SetPawn(pawn.Position, pawn);
             }
         }
-
+        public PawnColor CurrentColorToMove => AllMoves.Count % 2 == 0 ? PawnColor.White : PawnColor.Black;
         public Pawn GetPawn(Position pos) => pawns[pos.Letter - 1, pos.Digit - 1];
         public Pawn GetPawn(char letter, int digit) => Exists(letter, digit) ? pawns[letter - 97, digit - 1] : null;
         public Pawn GetKing(PawnColor pawnColor) => GetPawns(pawnColor).FirstOrDefault(pawn => pawn.PawnType == PawnType.King);
