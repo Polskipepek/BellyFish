@@ -6,7 +6,7 @@ using BellyFish.Source.Misc.Extensions;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace BellyFish.Source.Game.Gameplay.MoveStrategy {
+namespace BellyFish.Source.Game.Gameplay.Moves.MoveStrategy {
     class PawnMoveStrategy : IMoveStrategy {
         public IEnumerable<Move> GetMoves(Checkerboard checkerboard, Pawn pawn) {
             Position posPlus1;

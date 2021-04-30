@@ -1,4 +1,4 @@
-﻿using BellyFish.Source.Game.Gameplay;
+﻿using BellyFish.Source.Game.Gameplay.Moves;
 using BellyFish.Source.Game.Pawns;
 using System.Collections.Generic;
 using System.Linq;

@@ -1,5 +1,5 @@
 ﻿using BellyFish.Source.Game.CheckerBoard;
-using BellyFish.Source.Game.Gameplay.MoveStrategy;
+using BellyFish.Source.Game.Gameplay.Moves.MoveStrategy;
 using BellyFish.Source.Game.Misc;
 using BellyFish.Source.Game.Pawns;
 using BellyFish.Source.Misc;
@@ -45,7 +45,7 @@ namespace BellyFish {
             });
 
             var pieces = MainCheckerboard.GetAllPawns();
-            PiecesOnBoard.Text = $"Pionów: {pieces.Count()}{Environment.NewLine}{Environment.NewLine}";
+            PiecesOnBoard.Text = $"Pawns: {pieces.Count()}{Environment.NewLine}{Environment.NewLine}";
 
             foreach (var pawn in pieces) {
                 PiecesOnBoard.Text += $"{pawn.PawnColor} {pawn.PawnType}, {pawn.Position.Letter}{pawn.Position.Digit},{Environment.NewLine}";

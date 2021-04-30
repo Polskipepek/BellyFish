@@ -1,5 +1,5 @@
 ﻿using BellyFish.Source.Game.CheckerBoard;
-using BellyFish.Source.Game.Gameplay;
+using BellyFish.Source.Game.Gameplay.Moves;
 using BellyFish.Source.Game.Pawns;
 using System.Collections.Generic;
 

@@ -1,7 +1,7 @@
 ﻿using BellyFish.Source.Game.Pawns;
 using BellyFish.Source.Misc;
 
-namespace BellyFish.Source.Game.Gameplay {
+namespace BellyFish.Source.Game.Gameplay.Moves {
     struct Move {
         public int MoveNumber { get; init; }
         public bool IsPromoting { get; init; }

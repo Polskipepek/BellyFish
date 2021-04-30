@@ -1,6 +1,6 @@
 ﻿using BellyFish.Source.Game.CheckerBoard;
-using BellyFish.Source.Game.Gameplay;
-using BellyFish.Source.Game.Gameplay.MoveStrategy;
+using BellyFish.Source.Game.Gameplay.Moves;
+using BellyFish.Source.Game.Gameplay.Moves.MoveStrategy;
 using BellyFish.Source.Game.Misc;
 using BellyFish.Source.Misc;
 using BellyFish.Source.Misc.Attributes;
