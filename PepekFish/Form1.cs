@@ -13,7 +13,7 @@ namespace BellyFish {
     public partial class Form1 : Form {
         public Form1() {
             InitializeComponent();
-            InitializeCheckerboard();
+       //     InitializeCheckerboard();
         }
         Checkerboard MainCheckerboard { get; set; }
 
