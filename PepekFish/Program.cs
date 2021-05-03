@@ -1,4 +1,5 @@
 using BellyFish.Source.Game.CheckerBoard;
+using BellyFish.Source.Game.Gameplay;
 using System;
 using System.Windows.Forms;
 
@@ -13,7 +14,8 @@ namespace BellyFish {
             Application.EnableVisualStyles ();
             Application.SetCompatibleTextRenderingDefault (false);
             // Application.Run(new Form1());
-            Application.Run (new CheckerboardDisplay ());
+            CheckerboardDisplay checkerboardDisplay = new ();
+            Application.Run (checkerboardDisplay);
         }
     }
 }
