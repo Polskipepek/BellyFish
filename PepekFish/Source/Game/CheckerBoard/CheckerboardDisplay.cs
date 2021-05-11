@@ -13,26 +13,47 @@ namespace BellyFish.Source.Game.CheckerBoard {
         public const int FieldSize = 100;
 
         public CheckerboardDisplay() {
+            Application.EnableVisualStyles();
             InitializeComponent();
+            InitializeToolbar();
             fields = FieldsGenerator.Instance.GenerateFields();
             DisplayedCheckboard = CheckerboardGenerator.InitializeCheckerboard();
-            DisplayFields();
+            _IsCheckerboardInverted = false;
         }
 
-        private Label lbl_depth;
-        private Label lbl_DepthVal;
-        private Button btn_DepthDec;
-        private Button btn_DepthInc;
-        private Panel pnl_Depth;
+        MenuStrip ms = new();
+        private void InitializeToolbar() {
+            ms.Dock = DockStyle.Top;
+
+            ToolStripMenuItem toolStripMenuItem = new("Obróć szachownice", null, null, "Obróć szachownice");
+            ms.Items.Add(toolStripMenuItem);
+            ms.Items[0].Click += RotateCheckerboard_Clicked;
+            Controls.Add(ms);
+        }
+
+        private void RotateCheckerboard_Clicked(object sender, System.EventArgs e) {
+            _IsCheckerboardInverted = !_IsCheckerboardInverted;
+        }
 
         public Checkerboard DisplayedCheckboard { get; private set; }
+        bool _IsCheckerboardInverted {
+            get => _isCheckerboardInverted;
+            set {
+                _isCheckerboardInverted = value;
+                DisplayFields();
+            }
+        }
+
+        bool _isCheckerboardInverted;
+
+        public static Label Counter;
 
         public int Depth { get; private set; } = 5;
 
         Field[,] fields = new Field[8, 8];
 
-        List<Label> Lbl_Fields = new List<Label>();
-        List<Label> Lbl_Pawns = new List<Label>();
+        List<Label> _lbl_Fields = new List<Label>();
+        List<Label> _lbl_Pawns = new List<Label>();
 
         public Pawn SelectedPawn {
             get => _selectedPawn;
@@ -49,13 +70,15 @@ namespace BellyFish.Source.Game.CheckerBoard {
 
         Pawn _selectedPawn;
 
-        private void CreateField(Field field) {
+        private void CreateField(Field field, int x, int y) {
             Label labelField = new();
             labelField.Name = $"Field_{(char)(field.FieldPosition.Letter + 96)}{field.FieldPosition.Digit}";
 
-            labelField.SetBounds((int)field.FieldPosition.Letter * FieldSize, field.FieldPosition.Digit * FieldSize, FieldSize, FieldSize);
+            labelField.SetBounds(x * FieldSize + FieldSize, (7 - y) * FieldSize + FieldSize, FieldSize, FieldSize);
             labelField.BackColor = field.FieldColor == PawnColor.White ? Color.Beige : Color.Black;
-            Lbl_Fields.Add(labelField);
+            labelField.Text = $"Field_{(char)(field.FieldPosition.Letter + 96)}{field.FieldPosition.Digit}";
+            labelField.ForeColor = Color.Red;
+            _lbl_Fields.Add(labelField);
             Controls.Add(labelField);
 
             var pawn = field.GetPawn(DisplayedCheckboard);
@@ -68,20 +91,21 @@ namespace BellyFish.Source.Game.CheckerBoard {
         private void CreatePawnToField(Field field, Pawn pawn) {
             Label label = new();
             label.SetBounds(GetPawnBounds(field.FieldPosition, out int y), y, FieldSize / 2, FieldSize / 2);
+            label.Text = $"{pawn.PawnType.ToString().Substring(0, 1)} {(char)(field.FieldPosition.Letter + 96)}{field.FieldPosition.Digit}";
             label.Name = $"Pawn_{(char)(field.FieldPosition.Letter + 96)}{field.FieldPosition.Digit}";
-            label.Text = pawn.PawnType.ToString();
+            //label.Text = pawn.PawnType.ToString();
             label.BackColor = pawn.PawnColor == PawnColor.White ? Color.Yellow : Color.Brown;
-            label.Font = new Font(label.Font.FontFamily, 20);
-            Lbl_Pawns.Add(label);
+            label.Font = new Font(label.Font.FontFamily, 13);
+            _lbl_Pawns.Add(label);
             label.Click += (sender, e) => OnPawnClicked(pawn);
             Controls.Add(label);
 
             label.BringToFront();
         }
 
-        private static int GetPawnBounds(Position position, out int y) {
-            y = position.Digit * FieldSize + FieldSize / 4;
-            return (int)position.Letter * FieldSize + FieldSize / 4;
+        private int GetPawnBounds(Position position, out int y) {
+            y = (_IsCheckerboardInverted ? position.Digit : 9 - position.Digit) * FieldSize + FieldSize / 4;
+            return (_IsCheckerboardInverted ? 9 - position.Letter : (int)(position.Letter)) * FieldSize + FieldSize / 4;
         }
 
         private void SelectField(Move move) {
@@ -106,6 +130,21 @@ namespace BellyFish.Source.Game.CheckerBoard {
             }
         }
 
+        private bool TryMakeMove(Position position) {
+            char letter = position.Letter < 50 ? (char)(position.Letter + 96) : position.Letter;
+            position = new(letter, position.Digit);
+
+            var moves = SelectedPawn.GetAvailableMoves(DisplayedCheckboard).ToList();
+            var givenMove = moves.FirstOrDefault(move => move.Pawn == SelectedPawn && move.NewPawnPos == position);
+
+            if (givenMove.Equals(default(Move))) {
+                return false;
+            }
+
+            MakeMove(givenMove);
+            return true;
+        }
+
         internal void MakeMove(Move move) {
             HidePawnMoves(move.Pawn);
 
@@ -126,12 +165,44 @@ namespace BellyFish.Source.Game.CheckerBoard {
         }
 
         void DisplayFields() {
-            foreach (var field in fields) {
-                CreateField(field);
+            if (Controls.Count > 1) {
+                Controls.Clear();
+                Controls.Add(ms);
             }
+
+            for (int x = 0; x < 8; x++) {
+                AddNumeration(x);
+                AddLetteration(x);
+
+                for (int y = 0; y < 8; y++) {
+                    if (_IsCheckerboardInverted) {
+                        CreateField(fields[x, 7 - y], 7 - x, y);
+                    } else {
+                        CreateField(fields[x, 7 - y], x, 7 - y);
+                    }
+                }
+            }
+            //InitializeToolbar();
         }
+
+        private void AddLetteration(int i) {
+            Label lbl_Letter = new();
+            lbl_Letter.Text = (char)(i + 97) + "";
+            lbl_Letter.Font = new Font(lbl_Letter.Font.FontFamily, 15f);
+            lbl_Letter.SetBounds((_IsCheckerboardInverted ? (8 - i) : (i + 1)) * FieldSize + FieldSize / 3, FieldSize / 2, 50, 50);
+            Controls.Add(lbl_Letter);
+        }
+
+        private void AddNumeration(int i) {
+            Label lbl_Digit = new();
+            lbl_Digit.Text = (i + 1) + "";
+            lbl_Digit.Font = new Font(lbl_Digit.Font.FontFamily, 15f);
+            lbl_Digit.SetBounds(FieldSize / 2, (_IsCheckerboardInverted ? (i + 1) : (8 - i)) * FieldSize + FieldSize / 3, 50, 50);
+            Controls.Add(lbl_Digit);
+        }
+
         void RedisplayPawns() {
-            foreach (var pawn in Lbl_Pawns) {
+            foreach (var pawn in _lbl_Pawns) {
                 Controls.Remove(pawn);
             }
 
@@ -149,90 +220,19 @@ namespace BellyFish.Source.Game.CheckerBoard {
         }
 
         private void InitializeComponent() {
-            this.lbl_depth = new System.Windows.Forms.Label();
-            this.lbl_DepthVal = new System.Windows.Forms.Label();
-            this.btn_DepthDec = new System.Windows.Forms.Button();
-            this.btn_DepthInc = new System.Windows.Forms.Button();
-            this.pnl_Depth = new System.Windows.Forms.Panel();
-            this.pnl_Depth.SuspendLayout();
-            this.SuspendLayout();
-            // 
-            // lbl_depth
-            // 
-            this.lbl_depth.AutoSize = true;
-            this.lbl_depth.Font = new System.Drawing.Font("Segoe UI", 15F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
-            this.lbl_depth.Location = new System.Drawing.Point(0, 0);
-            this.lbl_depth.Name = "lbl_depth";
-            this.lbl_depth.Size = new System.Drawing.Size(89, 28);
-            this.lbl_depth.TabIndex = 0;
-            this.lbl_depth.Text = "AI Depth";
-            // 
-            // lbl_DepthVal
-            // 
-            this.lbl_DepthVal.AutoSize = true;
-            this.lbl_DepthVal.Font = new System.Drawing.Font("Segoe UI", 15F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
-            this.lbl_DepthVal.Location = new System.Drawing.Point(153, 0);
-            this.lbl_DepthVal.Name = "lbl_DepthVal";
-            this.lbl_DepthVal.Size = new System.Drawing.Size(23, 28);
-            this.lbl_DepthVal.TabIndex = 1;
-            this.lbl_DepthVal.Text = "5";
-            // 
-            // btn_DepthDec
-            // 
-            this.btn_DepthDec.Font = new System.Drawing.Font("Segoe UI", 15F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
-            this.btn_DepthDec.Location = new System.Drawing.Point(107, 0);
-            this.btn_DepthDec.Name = "btn_DepthDec";
-            this.btn_DepthDec.Size = new System.Drawing.Size(30, 30);
-            this.btn_DepthDec.TabIndex = 2;
-            this.btn_DepthDec.Text = "-";
-            this.btn_DepthDec.TextAlign = System.Drawing.ContentAlignment.TopCenter;
-            this.btn_DepthDec.UseVisualStyleBackColor = true;
-            this.btn_DepthDec.Click += new System.EventHandler(this.DepthDec_Click);
-            // 
-            // btn_DepthInc
-            // 
-            this.btn_DepthInc.Font = new System.Drawing.Font("Segoe UI", 15F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
-            this.btn_DepthInc.Location = new System.Drawing.Point(194, 0);
-            this.btn_DepthInc.Name = "btn_DepthInc";
-            this.btn_DepthInc.Size = new System.Drawing.Size(30, 30);
-            this.btn_DepthInc.TabIndex = 3;
-            this.btn_DepthInc.Text = "+";
-            this.btn_DepthInc.TextAlign = System.Drawing.ContentAlignment.TopCenter;
-            this.btn_DepthInc.UseVisualStyleBackColor = true;
-            this.btn_DepthInc.Click += new System.EventHandler(this.DepthInc_Click);
-            // 
-            // pnl_Depth
-            // 
-            this.pnl_Depth.Controls.Add(this.lbl_depth);
-            this.pnl_Depth.Controls.Add(this.btn_DepthInc);
-            this.pnl_Depth.Controls.Add(this.btn_DepthDec);
-            this.pnl_Depth.Controls.Add(this.lbl_DepthVal);
-            this.pnl_Depth.Location = new System.Drawing.Point(1258, 12);
-            this.pnl_Depth.Name = "pnl_Depth";
-            this.pnl_Depth.Size = new System.Drawing.Size(230, 30);
-            this.pnl_Depth.TabIndex = 4;
+
             // 
             // CheckerboardDisplay
             // 
             this.ClientSize = new System.Drawing.Size(1500, 1000);
-            this.Controls.Add(this.pnl_Depth);
             this.Name = "CheckerboardDisplay";
-            this.pnl_Depth.ResumeLayout(false);
-            this.pnl_Depth.PerformLayout();
             this.ResumeLayout(false);
 
         }
 
         private void Field_Click(Field field) {
             var pawn = field.GetPawn(DisplayedCheckboard);
-            if (pawn != null && pawn.PawnColor == DisplayedCheckboard.CurrentColorToMove) {
-                OnPawnClicked(pawn);
-            } else if (SelectedPawn != null) {
-                TryMakeMove(field.FieldPosition);
-            } else {
-                if (_selectedPawn != null)
-                    HidePawnMoves(_selectedPawn);
-            }
+            Board_OnClick(pawn, field.FieldPosition);
         }
 
 
@@ -244,25 +244,23 @@ namespace BellyFish.Source.Game.CheckerBoard {
             }
             //MessageBox.Show ($"No kliklem {(char) (pawn.Position.Letter)}{pawn.Position.Digit} ");
         }
-
-        private void TryMakeMove(Position position) {
-            var moves = SelectedPawn.GetAvailableMoves(DisplayedCheckboard);
-            var givenMove = moves
-                .FirstOrDefault(move => move.NewPawnPos.Letter == position.Letter + 96 && move.NewPawnPos.Digit == position.Digit);
-            if (givenMove.Pawn != null) {
-                MakeMove(givenMove);
+        void Board_OnClick(Pawn pawn, Position position) {
+            if (pawn != null && pawn.PawnColor == DisplayedCheckboard.CurrentColorToMove) {
+                SelectedPawn = pawn;
+                return;
             }
+
+            if (SelectedPawn == null)
+                return;
+
+            if (pawn == null) {
+                TryMakeMove(position);
+            } else {
+                TryMakeMove(pawn.Position);
+            }
+
         }
 
-        private void DepthDec_Click(object sender, System.EventArgs e) {
-            if (Depth > 2)
-                this.lbl_DepthVal.Text = --Depth + "";
-        }
-
-        private void DepthInc_Click(object sender, System.EventArgs e) {
-            if (Depth > 1)
-                this.lbl_DepthVal.Text = ++Depth + "";
-        }
 
         protected override void OnPaint(PaintEventArgs e) {
             base.OnPaint(e);
