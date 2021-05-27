@@ -19,5 +19,8 @@
         public override int GetHashCode() {
             return base.GetHashCode();
         }
+        public override string ToString() {
+            return $"{Letter}{Digit}";
+        }
     }
 }

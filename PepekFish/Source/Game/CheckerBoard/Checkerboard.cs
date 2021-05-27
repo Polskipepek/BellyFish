@@ -44,8 +44,8 @@ namespace BellyFish.Source.Game.CheckerBoard {
         }
 
         public bool CheckIfCheck(PawnColor checkedColor) => GetPawns(checkedColor.Opposite())
-            .SelectMany(p => p.GetAvailableTakes(p.MoveStrategy.GetMoves(this, p)))
-            .Where(move => move.IsTake)
+            .SelectMany(p => p.MoveStrategy.GetMoves(this,p))
+            .Where(m=>m.IsTake)
             .Any(m => m.NewPawnPos == GetKing(checkedColor).Position);
 
         public bool IsOccupied(Position pos, out Pawn occupiedPosPawn) => IsOccupied(pos.Letter, pos.Digit, out occupiedPosPawn);
@@ -77,8 +77,14 @@ namespace BellyFish.Source.Game.CheckerBoard {
             pawn.SetNewPosition(move.NewPawnPos);
 
             if (move.IsTake) {
-                pawns[move.TakenPawn.Position.Letter - 97, move.TakenPawn.Position.Digit - 1] = null;
+                SetPawn(move.TakenPawn.Position, null);
             }
+
+            if (move.IsCastling) {
+                SetPawn(move.CastlingRookNewPos, move.CastlingRook);
+
+            }
+
             SetPawn(move.PawnOriginPos, null);
             SetPawn(move.NewPawnPos, pawn);
 

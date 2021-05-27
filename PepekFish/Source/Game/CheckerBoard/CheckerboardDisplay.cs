@@ -18,25 +18,37 @@ namespace BellyFish.Source.Game.CheckerBoard {
             InitializeToolbar();
             fields = FieldsGenerator.Instance.GenerateFields();
             DisplayedCheckboard = CheckerboardGenerator.InitializeCheckerboard();
-            _IsCheckerboardInverted = false;
+            IsCheckerboardInverted = false;
         }
 
-        MenuStrip ms = new();
+        readonly MenuStrip ms = new();
         private void InitializeToolbar() {
             ms.Dock = DockStyle.Top;
 
-            ToolStripMenuItem toolStripMenuItem = new("Obróć szachownice", null, null, "Obróć szachownice");
-            ms.Items.Add(toolStripMenuItem);
-            ms.Items[0].Click += RotateCheckerboard_Clicked;
+            ToolStripMenuItem stripMenuItem_NewGame = new("Nowa gra", null, null, "Nowa gra");
+            ms.Items.Add(stripMenuItem_NewGame);
+            ms.Items[0].Click += NewGame_Clicked; ;
+
+            ToolStripMenuItem stripMenu_RotateCheckerboard = new("Obróć szachownice", null, null, "Obróć szachownice");
+            ms.Items.Add(stripMenu_RotateCheckerboard);
+            ms.Items[1].Click += RotateCheckerboard_Clicked;
+
             Controls.Add(ms);
         }
 
+        private void NewGame_Clicked(object sender, System.EventArgs e) {
+            InitializeToolbar();
+            fields = FieldsGenerator.Instance.GenerateFields();
+            DisplayedCheckboard = CheckerboardGenerator.InitializeCheckerboard();
+            IsCheckerboardInverted = false;
+        }
+
         private void RotateCheckerboard_Clicked(object sender, System.EventArgs e) {
-            _IsCheckerboardInverted = !_IsCheckerboardInverted;
+            IsCheckerboardInverted = !IsCheckerboardInverted;
         }
 
         public Checkerboard DisplayedCheckboard { get; private set; }
-        bool _IsCheckerboardInverted {
+        bool IsCheckerboardInverted {
             get => _isCheckerboardInverted;
             set {
                 _isCheckerboardInverted = value;
@@ -46,14 +58,11 @@ namespace BellyFish.Source.Game.CheckerBoard {
 
         bool _isCheckerboardInverted;
 
-        public static Label Counter;
-
         public int Depth { get; private set; } = 5;
 
         Field[,] fields = new Field[8, 8];
-
-        List<Label> _lbl_Fields = new List<Label>();
-        List<Label> _lbl_Pawns = new List<Label>();
+        readonly List<Label> _lbl_Fields = new();
+        readonly List<Label> _lbl_Pawns = new();
 
         public Pawn SelectedPawn {
             get => _selectedPawn;
@@ -104,8 +113,8 @@ namespace BellyFish.Source.Game.CheckerBoard {
         }
 
         private int GetPawnBounds(Position position, out int y) {
-            y = (_IsCheckerboardInverted ? position.Digit : 9 - position.Digit) * FieldSize + FieldSize / 4;
-            return (_IsCheckerboardInverted ? 9 - position.Letter : (int)(position.Letter)) * FieldSize + FieldSize / 4;
+            y = (IsCheckerboardInverted ? position.Digit : 9 - position.Digit) * FieldSize + FieldSize / 4;
+            return (IsCheckerboardInverted ? 9 - position.Letter : (int)(position.Letter)) * FieldSize + FieldSize / 4;
         }
 
         private void SelectField(Move move) {
@@ -151,8 +160,7 @@ namespace BellyFish.Source.Game.CheckerBoard {
             DisplayedCheckboard.MakeMove(move);
 
             RedisplayPawns();
-
-            DisplayedCheckboard.IsTerminal(out PawnColor winner);
+            DisplayedCheckboard.IsTerminal(out _);
 
         }
 
@@ -175,7 +183,7 @@ namespace BellyFish.Source.Game.CheckerBoard {
                 AddLetteration(x);
 
                 for (int y = 0; y < 8; y++) {
-                    if (_IsCheckerboardInverted) {
+                    if (IsCheckerboardInverted) {
                         CreateField(fields[x, 7 - y], 7 - x, y);
                     } else {
                         CreateField(fields[x, 7 - y], x, 7 - y);
@@ -189,7 +197,7 @@ namespace BellyFish.Source.Game.CheckerBoard {
             Label lbl_Letter = new();
             lbl_Letter.Text = (char)(i + 97) + "";
             lbl_Letter.Font = new Font(lbl_Letter.Font.FontFamily, 15f);
-            lbl_Letter.SetBounds((_IsCheckerboardInverted ? (8 - i) : (i + 1)) * FieldSize + FieldSize / 3, FieldSize / 2, 50, 50);
+            lbl_Letter.SetBounds((IsCheckerboardInverted ? (8 - i) : (i + 1)) * FieldSize + FieldSize / 3, FieldSize / 2, 50, 50);
             Controls.Add(lbl_Letter);
         }
 
@@ -197,7 +205,7 @@ namespace BellyFish.Source.Game.CheckerBoard {
             Label lbl_Digit = new();
             lbl_Digit.Text = (i + 1) + "";
             lbl_Digit.Font = new Font(lbl_Digit.Font.FontFamily, 15f);
-            lbl_Digit.SetBounds(FieldSize / 2, (_IsCheckerboardInverted ? (i + 1) : (8 - i)) * FieldSize + FieldSize / 3, 50, 50);
+            lbl_Digit.SetBounds(FieldSize / 2, (IsCheckerboardInverted ? (i + 1) : (8 - i)) * FieldSize + FieldSize / 3, 50, 50);
             Controls.Add(lbl_Digit);
         }
 
@@ -260,7 +268,6 @@ namespace BellyFish.Source.Game.CheckerBoard {
             }
 
         }
-
 
         protected override void OnPaint(PaintEventArgs e) {
             base.OnPaint(e);

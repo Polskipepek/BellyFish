@@ -6,6 +6,7 @@ using BellyFish.Source.Misc;
 using BellyFish.Source.Misc.Attributes;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace BellyFish.Source.Game.Pawns {
     class Pawn {
@@ -36,10 +37,17 @@ namespace BellyFish.Source.Game.Pawns {
 
         public IEnumerable<Move> GetAvailableMoves(Checkerboard checkerboard) {
             // return MoveStrategy.GetMoves(checkerboard, this)(m=>checkerboard.MakeMove(m));
-
-            foreach (var move in MoveStrategy.GetMoves(checkerboard, this)) {
+            var moves = MoveStrategy.GetMoves(checkerboard, this).ToList();
+            foreach (var move in moves) {
                 var copiedCheckerboard = Checkerboard.DeepCopy(checkerboard);
                 copiedCheckerboard.MakeMove(move);
+
+                var xd = copiedCheckerboard
+                    .GetPawns(move.Pawn.PawnColor)
+                    .AsEnumerable()
+                    .SelectMany(p => p.MoveStrategy.GetMoves(copiedCheckerboard, p))
+                    .Where(m => m.IsTake);
+
                 if (!copiedCheckerboard.CheckIfCheck(PawnColor)) {
                     yield return move;
                 }

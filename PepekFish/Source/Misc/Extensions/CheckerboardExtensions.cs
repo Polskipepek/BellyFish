@@ -12,6 +12,18 @@ namespace BellyFish.Source.Misc.Extensions {
                 PawnOriginPos = pawn.Position,
                 NewPawnPos = newPos,
                 TakenPawn = takenPawn,
+
+            };
+        }
+
+        public static Move GetCastlingMove(this Checkerboard checkerboard, Pawn pawn, Position newPos, Pawn CastlingRook = null, Position newCastlingRookPos = default) {
+            return new Move {
+                MoveNumber = checkerboard.AllMoves.Count + 1,
+                Pawn = pawn,
+                PawnOriginPos = pawn.Position,
+                NewPawnPos = newPos,
+                CastlingRook = CastlingRook,
+                CastlingRookNewPos = newCastlingRookPos,
             };
         }
 
