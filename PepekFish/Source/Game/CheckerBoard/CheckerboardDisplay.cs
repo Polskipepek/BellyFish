@@ -81,11 +81,10 @@ namespace BellyFish.Source.Game.CheckerBoard {
 
         private void CreateField(Field field, int x, int y) {
             Label labelField = new();
-            labelField.Name = $"Field_{(char)(field.FieldPosition.Letter + 96)}{field.FieldPosition.Digit}";
-
+            labelField.Name = $"Field_{(char)(field.FieldPosition.Letter + 97)}{field.FieldPosition.Digit+1}";
             labelField.SetBounds(x * FieldSize + FieldSize, (7 - y) * FieldSize + FieldSize, FieldSize, FieldSize);
             labelField.BackColor = field.FieldColor == PawnColor.White ? Color.Beige : Color.Black;
-            labelField.Text = $"Field_{(char)(field.FieldPosition.Letter + 96)}{field.FieldPosition.Digit}";
+            labelField.Text = $"Field_{(char)(field.FieldPosition.Letter + 97)}{field.FieldPosition.Digit}";
             labelField.ForeColor = Color.Red;
             _lbl_Fields.Add(labelField);
             Controls.Add(labelField);
@@ -100,8 +99,8 @@ namespace BellyFish.Source.Game.CheckerBoard {
         private void CreatePawnToField(Field field, Pawn pawn) {
             Label label = new();
             label.SetBounds(GetPawnBounds(field.FieldPosition, out int y), y, FieldSize / 2, FieldSize / 2);
-            label.Text = $"{pawn.PawnType.ToString().Substring(0, 1)} {(char)(field.FieldPosition.Letter + 96)}{field.FieldPosition.Digit}";
-            label.Name = $"Pawn_{(char)(field.FieldPosition.Letter + 96)}{field.FieldPosition.Digit}";
+            label.Text = $"{pawn.PawnType.ToString().Substring(0, 1)} {(char)(field.FieldPosition.Letter + 97)}{field.FieldPosition.Digit+1}";
+            label.Name = $"Pawn_{(char)(field.FieldPosition.Letter + 97)}{field.FieldPosition.Digit+1}";
             //label.Text = pawn.PawnType.ToString();
             label.BackColor = pawn.PawnColor == PawnColor.White ? Color.Yellow : Color.Brown;
             label.Font = new Font(label.Font.FontFamily, 13);
@@ -113,8 +112,8 @@ namespace BellyFish.Source.Game.CheckerBoard {
         }
 
         private int GetPawnBounds(Position position, out int y) {
-            y = (IsCheckerboardInverted ? position.Digit : 9 - position.Digit) * FieldSize + FieldSize / 4;
-            return (IsCheckerboardInverted ? 9 - position.Letter : (int)(position.Letter)) * FieldSize + FieldSize / 4;
+            y = (IsCheckerboardInverted ? position.Digit : 8 - position.Digit) * FieldSize + FieldSize / 4;
+            return (IsCheckerboardInverted ? 8 - position.Letter : position.Letter+1) * FieldSize + FieldSize / 4;
         }
 
         private void SelectField(Move move) {
@@ -140,9 +139,6 @@ namespace BellyFish.Source.Game.CheckerBoard {
         }
 
         private bool TryMakeMove(Position position) {
-            char letter = position.Letter < 50 ? (char)(position.Letter + 96) : position.Letter;
-            position = new(letter, position.Digit);
-
             var moves = SelectedPawn.GetAvailableMoves(DisplayedCheckboard).ToList();
             var givenMove = moves.FirstOrDefault(move => move.Pawn == SelectedPawn && move.NewPawnPos == position);
 
@@ -166,7 +162,7 @@ namespace BellyFish.Source.Game.CheckerBoard {
 
         private Field GetField(Position position) {
             foreach (var field in fields) {
-                if (field.FieldPosition.Letter + 96 == position.Letter && field.FieldPosition.Digit == position.Digit)
+                if (field.FieldPosition.Letter == position.Letter && field.FieldPosition.Digit == position.Digit)
                     return field;
             }
             return null;
@@ -186,7 +182,7 @@ namespace BellyFish.Source.Game.CheckerBoard {
                     if (IsCheckerboardInverted) {
                         CreateField(fields[x, 7 - y], 7 - x, y);
                     } else {
-                        CreateField(fields[x, 7 - y], x, 7 - y);
+                        CreateField(fields[x, y], x, y);
                     }
                 }
             }
@@ -195,17 +191,17 @@ namespace BellyFish.Source.Game.CheckerBoard {
 
         private void AddLetteration(int i) {
             Label lbl_Letter = new();
-            lbl_Letter.Text = (char)(i + 97) + "";
+            lbl_Letter.Text = i+ "";
             lbl_Letter.Font = new Font(lbl_Letter.Font.FontFamily, 15f);
-            lbl_Letter.SetBounds((IsCheckerboardInverted ? (8 - i) : (i + 1)) * FieldSize + FieldSize / 3, FieldSize / 2, 50, 50);
+            lbl_Letter.SetBounds((IsCheckerboardInverted ? (7 - i) : (i + 1)) * FieldSize + FieldSize / 3, FieldSize / 2, 50, 50);
             Controls.Add(lbl_Letter);
         }
 
         private void AddNumeration(int i) {
             Label lbl_Digit = new();
-            lbl_Digit.Text = (i + 1) + "";
+            lbl_Digit.Text = i + "";
             lbl_Digit.Font = new Font(lbl_Digit.Font.FontFamily, 15f);
-            lbl_Digit.SetBounds(FieldSize / 2, (IsCheckerboardInverted ? (i + 1) : (8 - i)) * FieldSize + FieldSize / 3, 50, 50);
+            lbl_Digit.SetBounds(FieldSize / 2, (IsCheckerboardInverted ? i  : 7 - i) * FieldSize + FieldSize / 3, 50, 50);
             Controls.Add(lbl_Digit);
         }
 

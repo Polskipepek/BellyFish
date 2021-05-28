@@ -1,11 +1,11 @@
 ﻿namespace BellyFish.Source.Misc {
     struct Position {
-        public Position(char letter, int digit) {
-            Letter = letter;
-            Digit = digit;
+        public Position(int x, int y) {
+            Letter = x;
+            Digit = y;
         }
 
-        public char Letter { get; }
+        public int Letter { get; }
         public int Digit { get; }
 
         public static Position operator +(Position a, Position b) => new((char)(a.Letter + b.Letter), a.Digit + b.Digit);

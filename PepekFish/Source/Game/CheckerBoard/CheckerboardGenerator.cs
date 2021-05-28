@@ -6,47 +6,46 @@ using System.Collections.Generic;
 
 namespace BellyFish.Source.Game.CheckerBoard {
     class CheckerboardGenerator : Singleton<CheckerboardGenerator> {
-        public static Checkerboard InitializeCheckerboard () {
-            return new Checkerboard (GetInitialPawns ());
+        public static Checkerboard InitializeCheckerboard() {
+            return new Checkerboard(GetInitialPawns());
         }
 
-        static IEnumerable<Pawn> GetInitialPawns () {
-            IMoveStrategy pawnMoveStrategy = new PawnMoveStrategy ();
-            IMoveStrategy bishopMoveStrategy = new BishopMoveStrategy ();
-            IMoveStrategy knightMoveStrategy = new KnightMoveStrategy ();
-            IMoveStrategy rookMoveStrategy = new RookMoveStrategy ();
-            IMoveStrategy kingMoveStrategy = new KingMoveStrategy ();
-            IMoveStrategy queenMoveStrategy = new QueenMoveStrategy ();
+        static IEnumerable<Pawn> GetInitialPawns() {
+            IMoveStrategy pawnMoveStrategy = new PawnMoveStrategy();
+            IMoveStrategy bishopMoveStrategy = new BishopMoveStrategy();
+            IMoveStrategy knightMoveStrategy = new KnightMoveStrategy();
+            IMoveStrategy rookMoveStrategy = new RookMoveStrategy();
+            IMoveStrategy kingMoveStrategy = new KingMoveStrategy();
+            IMoveStrategy queenMoveStrategy = new QueenMoveStrategy();
 
-            int a = 'a';
-            for (int x = a; x < a + 8; x++) {
-                yield return new Pawn (new Position ((char) x, 2), PawnColor.White, PawnType.Pawn, pawnMoveStrategy);
-                yield return new Pawn (new Position ((char) x, 7), PawnColor.Black, PawnType.Pawn, pawnMoveStrategy);
+            for (int x = 0; x < 8; x++) {
+                yield return new Pawn(new Position((char)x, 1), PawnColor.White, PawnType.Pawn, pawnMoveStrategy);
+                yield return new Pawn(new Position((char)x, 6), PawnColor.Black, PawnType.Pawn, pawnMoveStrategy);
             }
 
-            yield return new Pawn (new Position ('a', 1), PawnColor.White, PawnType.Rook, rookMoveStrategy);
-            yield return new Pawn (new Position ('h', 1), PawnColor.White, PawnType.Rook, rookMoveStrategy);
+            yield return new Pawn(new Position(0, 0), PawnColor.White, PawnType.Rook, rookMoveStrategy);
+            yield return new Pawn(new Position(7, 0), PawnColor.White, PawnType.Rook, rookMoveStrategy);
 
-            yield return new Pawn (new Position ('a', 8), PawnColor.Black, PawnType.Rook, rookMoveStrategy);
-            yield return new Pawn (new Position ('h', 8), PawnColor.Black, PawnType.Rook, rookMoveStrategy);
+            yield return new Pawn(new Position(0, 7), PawnColor.Black, PawnType.Rook, rookMoveStrategy);
+            yield return new Pawn(new Position(7, 7), PawnColor.Black, PawnType.Rook, rookMoveStrategy);
 
-            yield return new Pawn (new Position ('b', 1), PawnColor.White, PawnType.Knight, knightMoveStrategy);
-            yield return new Pawn (new Position ('g', 1), PawnColor.White, PawnType.Knight, knightMoveStrategy);
+            yield return new Pawn(new Position(1, 0), PawnColor.White, PawnType.Knight, knightMoveStrategy);
+            yield return new Pawn(new Position(6, 0), PawnColor.White, PawnType.Knight, knightMoveStrategy);
 
-            yield return new Pawn (new Position ('b', 8), PawnColor.Black, PawnType.Knight, knightMoveStrategy);
-            yield return new Pawn (new Position ('g', 8), PawnColor.Black, PawnType.Knight, knightMoveStrategy);
+            yield return new Pawn(new Position(1, 7), PawnColor.Black, PawnType.Knight, knightMoveStrategy);
+            yield return new Pawn(new Position(6, 7), PawnColor.Black, PawnType.Knight, knightMoveStrategy);
 
-            yield return new Pawn (new Position ('c', 1), PawnColor.White, PawnType.Bishop, bishopMoveStrategy);
-            yield return new Pawn (new Position ('f', 1), PawnColor.White, PawnType.Bishop, bishopMoveStrategy);
+            yield return new Pawn(new Position(2, 0), PawnColor.White, PawnType.Bishop, bishopMoveStrategy);
+            yield return new Pawn(new Position(5, 0), PawnColor.White, PawnType.Bishop, bishopMoveStrategy);
 
-            yield return new Pawn (new Position ('c', 8), PawnColor.Black, PawnType.Bishop, bishopMoveStrategy);
-            yield return new Pawn (new Position ('f', 8), PawnColor.Black, PawnType.Bishop, bishopMoveStrategy);
+            yield return new Pawn(new Position(2, 7), PawnColor.Black, PawnType.Bishop, bishopMoveStrategy);
+            yield return new Pawn(new Position(5, 7), PawnColor.Black, PawnType.Bishop, bishopMoveStrategy);
 
-            yield return new Pawn (new Position ('e', 1), PawnColor.White, PawnType.King, kingMoveStrategy);
-            yield return new Pawn (new Position ('e', 8), PawnColor.Black, PawnType.King, kingMoveStrategy);
+            yield return new Pawn(new Position(4, 0), PawnColor.White, PawnType.King, kingMoveStrategy);
+            yield return new Pawn(new Position(4, 7), PawnColor.Black, PawnType.King, kingMoveStrategy);
 
-            yield return new Pawn (new Position ('d', 1), PawnColor.White, PawnType.Queen, queenMoveStrategy);
-            yield return new Pawn (new Position ('d', 8), PawnColor.Black, PawnType.Queen, queenMoveStrategy);
+            yield return new Pawn(new Position(3, 0), PawnColor.White, PawnType.Queen, queenMoveStrategy);
+            yield return new Pawn(new Position(3, 7), PawnColor.Black, PawnType.Queen, queenMoveStrategy);
         }
     }
 }
