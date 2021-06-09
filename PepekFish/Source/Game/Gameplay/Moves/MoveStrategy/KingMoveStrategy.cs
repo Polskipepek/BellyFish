@@ -50,22 +50,19 @@ namespace BellyFish.Source.Game.Gameplay.Moves.MoveStrategy {
                 yield break;
             }
 
-            var rookH = checkerboard.GetPawns(pawn.PawnColor).FirstOrDefault(p => p.PawnType == Misc.PawnType.Rook && p.Position.Letter == 7);
-            if (rookH == null
-                || checkerboard.AllMoves.Any(m => m.Pawn == rookH)
-                || GetPositionsInBetween(pawn.PawnColor, false).Any(pos => checkerboard.GetPawn(pos.Letter, pos.Digit) != null)
-                || checkerboard.GetPawns(pawn.PawnColor.Opposite()).Any(p => p.GetAvailableMoves(checkerboard).Any(m => m.TakenPawn == rookH))) {
-
-            } else {
+            var rookH = checkerboard.GetPawns(pawn.PawnColor).FirstOrDefault(p => p.PawnType == PawnType.Rook && p.Position.Letter == 7);
+            if (rookH != null
+                && !checkerboard.AllMoves.Any(m => m.Pawn == rookH)
+                && !GetPositionsInBetween(pawn.PawnColor, false).Any(pos => checkerboard.GetPawn(pos.Letter, pos.Digit) != null)
+                && !checkerboard.GetPawns(pawn.PawnColor.Opposite()).Any(p => p.GetAvailableMoves(checkerboard).Any(m => m.TakenPawn == rookH))) {
                 yield return checkerboard.GetCastlingMove(pawn, new Position(6, pawn.PawnColor == PawnColor.White ? 1 : 8), rookH, new Position(5, pawn.PawnColor == PawnColor.White ? 1 : 8));
             }
 
-            var rookA = checkerboard.GetPawns(pawn.PawnColor).FirstOrDefault(p => p.PawnType == Misc.PawnType.Rook && p.Position.Letter == 0);
-            if (rookA == null
-                || checkerboard.AllMoves.Any(m => m.Pawn == rookA)
-                || GetPositionsInBetween(pawn.PawnColor, true).Any(pos => checkerboard.GetPawn(pos.Letter, pos.Digit) != null)
-                || checkerboard.GetPawns(pawn.PawnColor.Opposite()).Any(p => p.GetAvailableMoves(checkerboard).Any(m => m.TakenPawn == rookA))) {
-            } else {
+            var rookA = checkerboard.GetPawns(pawn.PawnColor).FirstOrDefault(p => p.PawnType == PawnType.Rook && p.Position.Letter == 0);
+            if (rookA != null
+                && !checkerboard.AllMoves.Any(m => m.Pawn == rookA)
+                && !GetPositionsInBetween(pawn.PawnColor, true).Any(pos => checkerboard.GetPawn(pos.Letter, pos.Digit) != null)
+                && !checkerboard.GetPawns(pawn.PawnColor.Opposite()).Any(p => p.GetAvailableMoves(checkerboard).Any(m => m.TakenPawn == rookA))) {
                 yield return checkerboard.GetCastlingMove(pawn, new Position(2, pawn.PawnColor == PawnColor.White ? 1 : 8), rookH, new Position(4, pawn.PawnColor == PawnColor.White ? 1 : 8));
             }
 

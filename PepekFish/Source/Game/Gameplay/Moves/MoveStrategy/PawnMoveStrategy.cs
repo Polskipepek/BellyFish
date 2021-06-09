@@ -13,16 +13,16 @@ namespace BellyFish.Source.Game.Gameplay.Moves.MoveStrategy {
             Position posPlus2;
 
             if (pawn.PawnColor == PawnColor.White) {
-                posPlus1 = pawn.Position + new Position((char)0, 1);
-                posPlus2 = posPlus1 + new Position((char)0, 1);
+                posPlus1 = pawn.Position + new Position(0, 1);
+                posPlus2 = posPlus1 + new Position(0, 1);
 
             } else {
-                posPlus1 = pawn.Position - new Position((char)0, 1);
-                posPlus2 = posPlus1 - new Position((char)0, 1);
+                posPlus1 = pawn.Position - new Position(0, 1);
+                posPlus2 = posPlus1 - new Position(0, 1);
             }
 
             bool canMove1SquareForward = checkerboard.IsEmptyButExists(posPlus1);
-            bool canMove2SquareForward = pawn.Position.Digit == (pawn.PawnColor == PawnColor.White ? 2 : 7) && checkerboard.IsEmptyButExists(posPlus2);
+            bool canMove2SquareForward = pawn.Position.Digit == (pawn.PawnColor == PawnColor.White ? 1 : 6) && checkerboard.IsEmptyButExists(posPlus2);
 
             if (canMove1SquareForward) {
                 yield return checkerboard.GetMove(pawn, posPlus1);
@@ -47,15 +47,15 @@ namespace BellyFish.Source.Game.Gameplay.Moves.MoveStrategy {
             int curPawnDigit = pawn.Position.Digit;
 
             if (pawn.PawnColor == PawnColor.White) {
-                frontLeftPos = new Position((char)(curPawnLetter - 1), curPawnDigit + 1);
-                frontRightPos = new Position((char)(curPawnLetter + 1), curPawnDigit + 1);
-                leftPos = new Position((char)(curPawnLetter - 1), curPawnDigit);
-                rightPos = new Position((char)(curPawnLetter + 1), curPawnDigit);
+                frontLeftPos = new Position((curPawnLetter - 1), curPawnDigit + 1);
+                frontRightPos = new Position((curPawnLetter + 1), curPawnDigit + 1);
+                leftPos = new Position((curPawnLetter - 1), curPawnDigit);
+                rightPos = new Position((curPawnLetter + 1), curPawnDigit);
             } else {
-                frontLeftPos = new Position((char)(curPawnLetter + 1), curPawnDigit - 1);
-                frontRightPos = new Position((char)(curPawnLetter - 1), curPawnDigit - 1);
-                leftPos = new Position((char)(curPawnLetter - 1), curPawnDigit);
-                rightPos = new Position((char)(curPawnLetter + 1), curPawnDigit);
+                frontLeftPos = new Position((curPawnLetter + 1), curPawnDigit - 1);
+                frontRightPos = new Position((curPawnLetter - 1), curPawnDigit - 1);
+                leftPos = new Position((curPawnLetter - 1), curPawnDigit);
+                rightPos = new Position((curPawnLetter + 1), curPawnDigit);
             }
 
             if (checkerboard.IsOccupied(leftPos, out Pawn oppositeLeftPawn) && CanTakeEnPassant(checkerboard, pawn, oppositeLeftPawn, frontLeftPos, out Pawn frontLeftPawn)) {
@@ -76,7 +76,7 @@ namespace BellyFish.Source.Game.Gameplay.Moves.MoveStrategy {
 
         bool CanTakeEnPassant(Checkerboard checkerboard, Pawn pawn, Pawn sidePawn, Position finalPawnPos, out Pawn sidePosPawn) {
             sidePosPawn = null;
-            return pawn.Position.Digit == (pawn.PawnColor == PawnColor.White ? 5 : 4)
+            return pawn.Position.Digit == (pawn.PawnColor == PawnColor.White ? 4 : 3)
                 && pawn.AreOppositeColor(sidePawn)
                 && checkerboard.AllMoves.Last().Pawn.PawnType == PawnType.Pawn
                 && checkerboard.AllMoves.Last().NewPawnPos == sidePawn.Position
