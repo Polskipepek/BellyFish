@@ -31,10 +31,10 @@ namespace BellyFish.Source.Game.Gameplay.Moves.MoveStrategy {
             if (moveLeft.HasValue) yield return moveLeft.Value;
             if (moveUpper.HasValue) yield return moveUpper.Value;
 
-            var castlingMoves = GetCastlingMoves(checkerboard, pawn);
-            foreach (var move in castlingMoves) {
-                yield return move;
-            }
+            //var castlingMoves = GetCastlingMoves(checkerboard, pawn);
+            //foreach (var move in castlingMoves) {
+            //    yield return move;
+            //}
 
         }
 
@@ -45,25 +45,32 @@ namespace BellyFish.Source.Game.Gameplay.Moves.MoveStrategy {
             return null;
         }
 
-        IEnumerable<Move> GetCastlingMoves(Checkerboard checkerboard, Pawn pawn) {
-            if (checkerboard.AllMoves.Any(move => move.Pawn == pawn)) {
+        static IEnumerable<Move> GetCastlingMoves(Checkerboard checkerboard, Pawn king) {
+            if (checkerboard.AllMoves.Any(move => move.Pawn == king) || checkerboard.CheckIfCheck(checkerboard.CurrentColorToMove)) {
                 yield break;
             }
 
-            var rookH = checkerboard.GetPawns(pawn.PawnColor).FirstOrDefault(p => p.PawnType == PawnType.Rook && p.Position.Letter == 7);
+            var rookH = checkerboard.GetPawns(king.PawnColor).FirstOrDefault(p => p.PawnType == PawnType.Rook && p.Position.Letter == 7);
             if (rookH != null
                 && !checkerboard.AllMoves.Any(m => m.Pawn == rookH)
-                && !GetPositionsInBetween(pawn.PawnColor, false).Any(pos => checkerboard.GetPawn(pos.Letter, pos.Digit) != null)
-                && !checkerboard.GetPawns(pawn.PawnColor.Opposite()).Any(p => p.GetAvailableMoves(checkerboard).Any(m => m.TakenPawn == rookH))) {
-                yield return checkerboard.GetCastlingMove(pawn, new Position(6, pawn.PawnColor == PawnColor.White ? 1 : 8), rookH, new Position(5, pawn.PawnColor == PawnColor.White ? 1 : 8));
+                && GetPositionsInBetween(king.PawnColor, false).Any(pos => checkerboard.GetPawn(pos.Letter, pos.Digit) == null)
+                && !checkerboard.GetPawns(king.PawnColor.Opposite())
+                .Any(p => p.GetAvailableMoves(checkerboard)
+                .Any(m => (m.NewPawnPos.Digit == rookH.Position.Digit - 1 && m.NewPawnPos.Letter == rookH.Position.Letter)
+                || (m.NewPawnPos.Digit == rookH.Position.Digit - 2 && m.NewPawnPos.Letter == rookH.Position.Letter)))) {
+                yield return checkerboard.GetCastlingMove(king, new Position(6, king.PawnColor == PawnColor.White ? 1 : 8), rookH, new Position(5, king.PawnColor == PawnColor.White ? 1 : 8));
             }
 
-            var rookA = checkerboard.GetPawns(pawn.PawnColor).FirstOrDefault(p => p.PawnType == PawnType.Rook && p.Position.Letter == 0);
+            var rookA = checkerboard.GetPawns(king.PawnColor).FirstOrDefault(p => p.PawnType == PawnType.Rook && p.Position.Letter == 0);
             if (rookA != null
                 && !checkerboard.AllMoves.Any(m => m.Pawn == rookA)
-                && !GetPositionsInBetween(pawn.PawnColor, true).Any(pos => checkerboard.GetPawn(pos.Letter, pos.Digit) != null)
-                && !checkerboard.GetPawns(pawn.PawnColor.Opposite()).Any(p => p.GetAvailableMoves(checkerboard).Any(m => m.TakenPawn == rookA))) {
-                yield return checkerboard.GetCastlingMove(pawn, new Position(2, pawn.PawnColor == PawnColor.White ? 1 : 8), rookH, new Position(4, pawn.PawnColor == PawnColor.White ? 1 : 8));
+                && GetPositionsInBetween(king.PawnColor, true).Any(pos => checkerboard.GetPawn(pos.Letter, pos.Digit) == null)
+                && !checkerboard.GetPawns(king.PawnColor.Opposite())
+                .Any(p => p.GetAvailableMoves(checkerboard)
+                .Any(m => m.NewPawnPos.Digit == rookH.Position.Digit + 1 && m.NewPawnPos.Letter == rookH.Position.Letter
+                || (m.NewPawnPos.Digit == rookH.Position.Digit + 2 && m.NewPawnPos.Letter == rookH.Position.Letter)
+                || (m.NewPawnPos.Digit == rookH.Position.Digit + 3 && m.NewPawnPos.Letter == rookH.Position.Letter)))) {
+                yield return checkerboard.GetCastlingMove(king, new Position(2, king.PawnColor == PawnColor.White ? 1 : 8), rookH, new Position(4, king.PawnColor == PawnColor.White ? 1 : 8));
             }
 
             IEnumerable<Position> GetPositionsInBetween(PawnColor pawnColor, bool smallCastle) {

@@ -20,7 +20,7 @@
             return base.GetHashCode();
         }
         public override string ToString() {
-            return $"{Letter}{Digit}";
+            return $"{(char)(Letter+97)}{Digit+1}";
         }
     }
 }

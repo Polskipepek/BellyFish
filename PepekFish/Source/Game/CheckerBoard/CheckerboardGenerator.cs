@@ -41,11 +41,11 @@ namespace BellyFish.Source.Game.CheckerBoard {
             yield return new Pawn(new Position(2, 7), PawnColor.Black, PawnType.Bishop, bishopMoveStrategy);
             yield return new Pawn(new Position(5, 7), PawnColor.Black, PawnType.Bishop, bishopMoveStrategy);
 
-            yield return new Pawn(new Position(4, 0), PawnColor.White, PawnType.King, kingMoveStrategy);
-            yield return new Pawn(new Position(4, 7), PawnColor.Black, PawnType.King, kingMoveStrategy);
-
             yield return new Pawn(new Position(3, 0), PawnColor.White, PawnType.Queen, queenMoveStrategy);
             yield return new Pawn(new Position(3, 7), PawnColor.Black, PawnType.Queen, queenMoveStrategy);
+
+            yield return new Pawn(new Position(4, 0), PawnColor.White, PawnType.King, kingMoveStrategy);
+            yield return new Pawn(new Position(4, 7), PawnColor.Black, PawnType.King, kingMoveStrategy);
         }
     }
 }
